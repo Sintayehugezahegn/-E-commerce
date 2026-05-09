@@ -4,16 +4,18 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-your-secret-key-here'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*'] # በ Codespaces ላይ እንዲሰራ '*' ተደርጓል
+ALLOWED_HOSTS = ['*'] # ለ Codespace እንዲያመች
 
 # Application definition
 INSTALLED_APPS = [
+    # Jazzmin የግድ ከ admin በላይ መሆን አለበት
+    'jazzmin', 
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -21,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # የኛ አፕሊኬሽን
+    # Your Apps
     'products',
 ]
 
@@ -40,7 +42,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # አጠቃላይ ቴምፕሌቶች ካሉ
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # ዋናው Templates ፎልደር
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -48,7 +50,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'products.context_processors.cart', # ካርት በሁሉም ገፅ እንዲታይ
+                'products.context_processors.cart', # ጋሪው በየገጹ እንዲታይ
             ],
         },
     },
@@ -66,10 +68,10 @@ DATABASES = {
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
-    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 # Internationalization
@@ -78,24 +80,53 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static & Media Files
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files (ለተጫኑ ፎቶዎች ማከማቻ)
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Authentication redirect
+# --- JAZZMIN SETTINGS (የአድሚን ገጹን ዲዛይን የሚቀይረው) ---
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Ethio Shop Admin",
+    "site_header": "Ethio Shop",
+    "site_brand": "Ethio Shop",
+    "welcome_sign": "Welcome to Ethio Shop Management",
+    "copyright": "Ethio Shop Ltd",
+    "search_model": ["auth.User", "products.Product"],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index"},
+        {"name": "View Site", "url": "/"},
+    ],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "products.Product": "fas fa-shopping-bag",
+        "products.Category": "fas fa-tags",
+        "products.Order": "fas fa-shipping-fast",
+        "products.Review": "fas fa-star",
+    },
+    "theme": "flatly", # ንጹህ ዲዛይን
+    "dark_mode_theme": "darkly",
+}
+
+JAZZMIN_UI_CONFIG = {
+    "navbar_fixed": True,
+    "layout_fixed": True,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "brand_colour": "navbar-primary",
+}
+
+# Login/Logout redirects
 LOGIN_REDIRECT_URL = 'product_list'
 LOGOUT_REDIRECT_URL = 'product_list'
-
-# --- CHAPA PAYMENT SETTINGS ---
-# እዚህ ጋር የራስህን Secret Key ከ Chapa Dashboard አምጥተህ ተካው
-CHAPA_SECRET_KEY = 'CH_SECRET_KEY-xxxxxxxxxxxxxxxxxxxxx'
-# Cart settings
+# Cart session ID
 CART_SESSION_ID = 'cart'

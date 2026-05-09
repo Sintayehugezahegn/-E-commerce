@@ -1,57 +1,51 @@
-{% extends 'products/base.html' %}
+{% extends 'base.html' %}
+
 {% block content %}
-<h2 class="fw-bold mb-4">Shopping Cart</h2>
-{% if cart %}
-<div class="row">
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm p-3">
-            <table class="table align-middle">
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h4>Your Shopping Cart</h4>
+    </div>
+    <div class="card-body">
+        {% if cart %}
+            <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>Product</th>
+                        <th>Quantity</th>
                         <th>Price</th>
-                        <th>Qty</th>
                         <th>Total</th>
-                        <th>Action</th>
+                        <th>Remove</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in cart %}
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                {% if item.product.image %}<img src="{{ item.product.image.url }}" width="40" class="me-2 rounded">{% endif %}
-                                <strong>{{ item.product.name }}</strong>
-                            </div>
-                        </td>
-                        <td>${{ item.price }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>${{ item.total_price }}</td>
-                        <td>
-                            <!-- item.product.id መጠቀማችንን እናረጋግጣለን -->
-                            <a href="{% url 'cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger">Remove</a>
-                        </td>
-                    </tr>
+                        {% with product=item.product %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>${{ item.price }}</td>
+                            <td>${{ item.total_price }}</td>
+                            <td>
+                                <a href="{% url 'cart_remove' product.id %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endwith %}
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm p-4">
-            <h4>Total: <span class="text-primary">${{ cart.get_total_price }}</span></h4>
-            <hr>
-            <div class="d-grid gap-2">
-                <a href="{% url 'checkout' %}" class="btn btn-success btn-lg">Checkout</a>
-                <a href="{% url 'product_list' %}" class="btn btn-light">Back to Shop</a>
+            <div class="d-flex justify-content-between mt-4">
+                <h4>Total: ${{ cart.get_total_price }}</h4>
+                <div>
+                    <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary">Checkout</a>
+                </div>
             </div>
-        </div>
+        {% else %}
+            <div class="text-center p-5">
+                <h3>Your cart is empty!</h3>
+                <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Start Shopping</a>
+            </div>
+        {% endif %}
     </div>
 </div>
-{% else %}
-<div class="text-center py-5">
-    <h3>Your cart is empty!</h3>
-    <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Shop Now</a>
-</div>
-{% endif %}
 {% endblock %}

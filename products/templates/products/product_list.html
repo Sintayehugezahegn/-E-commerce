@@ -1,76 +1,48 @@
-{% extends 'products/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="bg-dark text-white py-5 mb-5 shadow-sm" style="background: linear_gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center;">
-    <div class="container py-5 text-center">
-        <h1 class="display-3 fw-bold">Welcome to Our Shop</h1>
-        <p class="lead mb-4">Discover the best products at unbeatable prices.</p>
-        <form class="d-flex justify-content-center" method="get" action="{% url 'product_list' %}">
-            <input class="form-control me-2 w-50 rounded-pill" type="search" name="q" placeholder="Search products..." value="{{ query|default:'' }}">
-            <button class="btn btn-primary rounded-pill px-4" type="submit">Search</button>
+<!-- Welcome Banner -->
+<div class="p-5 mb-4 bg-primary text-white rounded-3 shadow text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-3 fw-bold">Welcome to Ethio Shop</h1>
+        <p class="fs-4">Your number one marketplace for quality products in Ethiopia.</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Categories Dropdown for Mobile/General -->
+    <div class="col-12 mb-4">
+        <form method="GET" class="d-flex">
+            <select name="category" class="form-select w-25 me-2" onchange="this.form.submit()">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if request.GET.category == cat.id|stringformat:"i" %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
         </form>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <!-- Sidebar: Categories -->
-        <div class="col-md-3">
-            <h4 class="fw-bold mb-3">Categories</h4>
-            <div class="list-group shadow-sm">
-                <a href="{% url 'product_list' %}" class="list-group-item list-group-item-action {% if not selected_category %}active{% endif %}">
-                    All Products
-                </a>
-                {% for category in categories %}
-                <a href="?category={{ category.id }}" class="list-group-item list-group-item-action {% if selected_category == category.id|stringformat:'i' %}active{% endif %}">
-                    {{ category.name }}
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Product Grid -->
-        <div class="col-md-9">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for product in products %}
-                <div class="col">
-                    <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="No image">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">{{ product.name }}</h5>
-                            <p class="text-success fw-bold fs-5">ETB {{ product.price }}</p>
-                            <p class="card-text text-muted text-truncate">{{ product.description }}</p>
-                        </div>
-                        <div class="card-footer bg-transparent border-0 pb-3">
-                            <div class="d-grid gap-2">
-                                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-dark rounded-pill">View Details</a>
-                                <a href="{% url 'cart_add' product.id %}" class="btn btn-primary rounded-pill">Add to Cart</a>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Products Grid -->
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" style="height: 250px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body text-center">
+                <h5 class="fw-bold">{{ product.name }}</h5>
+                <p class="text-success fs-4 fw-bold">${{ product.price }}</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'cart_add' product.id %}" class="btn btn-primary">Add to Cart</a>
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-dark">Details</a>
                 </div>
-                {% empty %}
-                <div class="col-12 text-center py-5">
-                    <h3 class="text-muted">No products found.</h3>
-                </div>
-                {% endfor %}
             </div>
         </div>
     </div>
+    {% empty %}
+    <div class="col-12 text-center">
+        <h3>No products found.</h3>
+    </div>
+    {% endfor %}
 </div>
-
-<style>
-    .hover-shadow:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
-    }
-    .transition {
-        transition: all 0.3s ease;
-    }
-</style>
 {% endblock %}

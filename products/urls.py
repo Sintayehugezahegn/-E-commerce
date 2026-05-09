@@ -8,6 +8,7 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', views.cart_add, name='cart_add'),
     path('cart/remove/<int:product_id>/', views.cart_remove, name='cart_remove'),
     path('checkout/', views.checkout, name='checkout'),
-    path('payment-success/<int:order_id>/', views.payment_success, name='payment_success')
-    ,path('profile/', views.product_list, name='profile'), # ለጊዜው ወደ ዋናው ገጽ እንዲወስድ
+    path('payment-success/<int:order_id>/', views.payment_success, name='payment_success'),
+    path('profile/', views.profile, name='profile'),
+    path('product/<int:product_id>/review/', views.add_review, name='add_review'),
 ]
