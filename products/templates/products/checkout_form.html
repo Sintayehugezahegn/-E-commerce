@@ -1,0 +1,62 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-4 fw-bold">Shipping Information</h2>
+            
+            <!-- ይሄ ክፍል ነው ስህተቱን የሚነግረን -->
+            {% if error %}
+            <div class="alert alert-danger shadow-sm border-0 mb-4">
+                <strong>Error:</strong> {{ error }}
+            </div>
+            {% endif %}
+
+            <form method="post" class="card p-4 shadow-sm border-0">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="first_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="address" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" class="form-control" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg mt-4 w-100 rounded-pill shadow">Confirm and Pay</button>
+            </form>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-3">
+                <h4 class="fw-bold">Your Order</h4>
+                <hr>
+                {% for item in cart %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                    <span>${{ item.total_price }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between fw-bold fs-5 text-primary">
+                    <span>Total:</span>
+                    <span>${{ cart.get_total_price }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

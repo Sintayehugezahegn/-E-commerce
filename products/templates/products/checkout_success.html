@@ -1,0 +1,24 @@
+{% extends 'products/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card border-0 shadow-sm p-5 rounded-4">
+            <div class="mb-4">
+                <span class="display-1 text-success">✔</span>
+            </div>
+            <h1 class="fw-bold text-dark">Order Successful!</h1>
+            <p class="text-muted fs-5 mb-4">Thank you for your purchase. Your order has been placed and is being processed.</p>
+            
+            <div class="alert alert-light border mb-4">
+                <span class="text-muted small">Order Reference:</span>
+                <h5 class="fw-bold mb-0 text-uppercase">#{{ order.id|add:"1000" }}</h5>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg fw-bold rounded-3">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

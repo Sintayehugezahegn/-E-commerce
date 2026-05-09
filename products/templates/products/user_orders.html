@@ -1,0 +1,32 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<h2 class="fw-bold mb-4">Your Order History</h2>
+<div class="card border-0 shadow-sm p-4">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>#{{ order.id|add:1000 }}</td>
+                <td>{{ order.created|date:"M d, Y" }}</td>
+                <td>
+                    {% if order.is_paid %}
+                        <span class="badge bg-success">Paid</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% endif %}
+                </td>
+                <td>${{ order.payment_reference }} (Ref)</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

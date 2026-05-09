@@ -1,0 +1,22 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="card p-5 shadow border-0">
+        <div class="mb-4">
+            <span class="display-1 text-success">✅</span>
+        </div>
+        <h1 class="fw-bold mb-3">Payment Successful!</h1>
+        <p class="fs-5 text-muted">
+            Thank you, <strong>{{ order.first_name }}</strong>! <br>
+            Your order <strong>#{{ order.id }}</strong> has been placed and confirmed.
+        </p>
+        <div class="bg-light p-3 rounded mb-4">
+            <p class="mb-1">Amount Paid: <strong>ETB {{ cart.get_total_price }}</strong></p>
+            <p class="mb-0">Reference: <small class="text-secondary">{{ order.payment_reference }}</small></p>
+        </div>
+        <div>
+            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg rounded-pill px-5">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
