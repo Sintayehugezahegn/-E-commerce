@@ -1,48 +1,56 @@
-{% extends 'products/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <div class="card border-0 shadow-sm p-4 rounded-4">
-            <h2 class="fw-bold text-center mb-4">Create Account</h2>
-            <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="text-danger small">{{ field.errors }}</div>
-                        {% endif %}
-                        {% if field.help_text %}
-                            <div class="text-muted small" style="font-size: 0.8rem;">{{ field.help_text }}</div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3">Sign Up</button>
-                    <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h4 class="mb-0">Create Your Account</h4>
                 </div>
-            </form>
+                <div class="card-body p-4">
+                    <form method="post" class="signup-form">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="form-text small">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Register Now</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center bg-light py-3">
+                    <span>Already have an account? <a href="{% url 'login' %}" class="text-decoration-none fw-bold">Login Here</a></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* ፎርሙ እንዲያምር Bootstrap ክላስ መጨመሪያ */
-    input {
+    /* Django inputs auto-styling to Bootstrap */
+    .signup-form input {
         display: block;
         width: 100%;
-        padding: 0.375rem 0.75rem;
+        padding: 10px;
         font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #212529;
-        background-color: #fff;
-        background-clip: padding-box;
         border: 1px solid #ced4da;
-        border-radius: 0.375rem;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        border-radius: 8px;
+        margin-bottom: 5px;
+    }
+    .signup-form input:focus {
+        border-color: #0d6efd;
+        outline: none;
+        box-shadow: 0 0 5px rgba(13,110,253,0.25);
     }
 </style>
 {% endblock %}

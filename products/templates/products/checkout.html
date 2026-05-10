@@ -1,29 +1,75 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-lg p-4">
-            <h2 class="text-center mb-4">Checkout</h2>
-            <div class="alert alert-info small">
-                Pay to: CBE 1000XXXXXXXX / Telebirr 09XXXXXXXX
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Checkout</h2>
+    <div class="row">
+        <!-- Billing Details -->
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4 border-0">
+                <form method="post">
+                    {% csrf_token %}
+                    <h5 class="mb-3">Shipping Information</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <textarea name="address" class="form-control" rows="2" required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" placeholder="e.g. Addis Ababa" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Payment Method</label>
+                            <select name="bank_name" class="form-select" required>
+                                <option value="Telebirr">Telebirr</option>
+                                <option value="CBE">CBE (Commercial Bank)</option>
+                                <option value="Abyssinia">Bank of Abyssinia</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Transaction Reference / Ref Number</label>
+                        <input type="text" name="payment_reference" class="form-control" placeholder="Enter your payment ref" required>
+                        <small class="text-muted">Please pay first and enter the transaction ID here.</small>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">Place Order</button>
+                    </div>
+                </form>
             </div>
-            <form method="POST">
-                {% csrf_token %}
-                <input type="text" name="first_name" class="form-control mb-3" placeholder="First Name" required>
-                <input type="text" name="last_name" class="form-control mb-3" placeholder="Last Name" required>
-                
-                <label class="fw-bold">Payment Method</label>
-                <select name="bank_name" class="form-select mb-3" required>
-                    <option value="Telebirr">Telebirr</option>
-                    <option value="CBE">CBE (Commercial Bank)</option>
-                    <option value="Abyssinia">Bank of Abyssinia</option>
-                    <option value="Awash">Awash Bank</option>
-                </select>
-                
-                <input type="text" name="payment_reference" class="form-control mb-3" placeholder="Transaction ID (e.g. ABC123XYZ)" required>
-                <textarea name="address" class="form-control mb-3" placeholder="Shipping Address" required></textarea>
-                <button type="submit" class="btn btn-success w-100 btn-lg">Pay & Place Order</button>
-            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 border-0 bg-light">
+                <h5 class="mb-3">Order Summary</h5>
+                {% for item in cart %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                    <span>${{ item.total_price }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <strong class="fs-5">Total:</strong>
+                    <strong class="fs-5 text-primary">${{ cart.get_total_price }}</strong>
+                </div>
+            </div>
         </div>
     </div>
 </div>

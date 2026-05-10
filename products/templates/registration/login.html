@@ -1,25 +1,33 @@
-{% extends 'products/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <div class="card border-0 shadow-sm p-4 rounded-4">
-            <h2 class="fw-bold text-center mb-4">Login</h2>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Username</label>
-                    <input type="text" name="username" class="form-control" required>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0">Login</h4>
                 </div>
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">Password</label>
-                    <input type="password" name="password" class="form-control" required>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3">Login</button>
-                    <p class="text-center mt-3">Don't have an account? <a href="{% url 'signup' %}">Sign up now</a></p>
+                <div class="card-footer text-center bg-light">
+                    <p class="mb-0">New here? <a href="{% url 'signup' %}" class="fw-bold">Create an account</a></p>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

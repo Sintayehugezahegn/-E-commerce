@@ -1,8 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 from .models import Product, Category, Order, OrderItem, Review
 from .cart import Cart
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('product_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
 
 def product_list(request):
     categories = Category.objects.all()
@@ -10,21 +22,22 @@ def product_list(request):
     category_id = request.GET.get('category')
     if category_id:
         products = products.filter(category_id=category_id)
-    return render(request, 'products/product_list.html', {
-        'products': products, 
-        'categories': categories
-    })
+    return render(request, 'products/product_list.html', {'products': products, 'categories': categories})
 
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
-    reviews = product.reviews.all().order_by('-created_at')
-    return render(request, 'products/product_detail.html', {'product': product, 'reviews': reviews})
+    return render(request, 'products/product_detail.html', {'product': product})
+
+@login_required
+def profile(request):
+    # የዩዘሩን ትዕዛዞች (Orders) እንዲያይ ያደርገዋል
+    orders = Order.objects.filter(user=request.user).order_by('-created')
+    return render(request, 'products/profile.html', {'orders': orders})
 
 def cart_add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
     cart.add(product=product)
-    messages.success(request, f"{product.name} added to cart.")
     return redirect('cart_detail')
 
 def cart_remove(request, product_id):
@@ -40,51 +53,17 @@ def cart_detail(request):
 @login_required
 def checkout(request):
     cart = Cart(request)
-    if len(cart) == 0:
-        return redirect('product_list')
-    
     if request.method == 'POST':
-        bank = request.POST.get('bank_name')
-        ref = request.POST.get('payment_reference')
-        
         order = Order.objects.create(
             user=request.user,
             first_name=request.POST.get('first_name'),
             last_name=request.POST.get('last_name'),
             email=request.user.email,
             address=request.POST.get('address'),
-            payment_reference=f"{bank}: {ref}"
+            city=request.POST.get('city')
         )
-        
         for item in cart:
-            OrderItem.objects.create(
-                order=order, product=item['product'], 
-                price=item['price'], quantity=item['quantity']
-            )
-        
+            OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
         cart.clear()
-        return redirect('payment_success', order_id=order.id)
-            
+        return render(request, 'products/payment_success.html', {'order': order})
     return render(request, 'products/checkout.html', {'cart': cart})
-
-def payment_success(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    return render(request, 'products/payment_success.html', {'order': order})
-
-@login_required
-def profile(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created')
-    return render(request, 'products/profile.html', {'orders': orders})
-
-@login_required
-def add_review(request, product_id):
-    if request.method == 'POST':
-        product = get_object_or_404(Product, id=product_id)
-        Review.objects.create(
-            product=product,
-            user=request.user,
-            rating=request.POST.get('rating'),
-            comment=request.POST.get('comment')
-        )
-        messages.success(request, "Review added!")
-    return redirect('product_detail', id=product_id)
