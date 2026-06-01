@@ -1,17 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Order, OrderItem
-
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug']
-    prepopulated_fields = {'slug': ('name',)}
-
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'image', 'available', 'created', 'updated']
-    list_filter = ['available', 'created', 'updated']
-    list_editable = ['price', 'available']
-    prepopulated_fields = {'slug': ('name',)}
+from .models import Category, Product, Order, OrderItem, Review, Profile
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -19,6 +7,15 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'status', 'created']
-    list_editable = ['status']
+    # በአድሚን ገጽ ላይ በሰንጠረዥ የሚወጡ ፊልዶች
+    list_display = ['id', 'user', 'first_name', 'last_name', 'email', 'city', 'is_paid', 'status', 'created']
+    # በምን ማጣራት (Filter) እንደሚቻል
+    list_filter = ['is_paid', 'status', 'created']
+    # አድሚኑ እዚያው ሰንጠረዡ ላይ ሆኖ በቀጥታ እንዲቀይር መፍቀጃ (በጣም ጠቃሚ!)
+    list_editable = ['is_paid', 'status']
     inlines = [OrderItemInline]
+
+admin.site.register(Category)
+admin.site.register(Product)
+admin.site.register(Review)
+admin.site.register(Profile)

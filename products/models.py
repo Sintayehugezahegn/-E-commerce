@@ -26,10 +26,12 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
+    # አድሚኑ ሊቀይራቸው የሚችላቸው የትዕዛዝ ደረጃዎች (Status)
     STATUS_CHOICES = (
-        ('Pending', 'Pending'),
-        ('Out for delivery', 'Out for delivery'),
-        ('Delivered', 'Delivered'),
+        ('Pending', 'ትዕዛዝ ላይ ያለ (Pending)'),
+        ('Shipped', 'የተላከ (Shipped)'),
+        ('Delivered', 'ደረሰ (Delivered)'),
+        ('Canceled', 'የተሰረዘ (Canceled)'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
@@ -38,10 +40,27 @@ class Order(models.Model):
     address = models.CharField(max_length=250)
     city = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
+    
+    # አዲሱ፡ ክፍያ መፈጸሙን ማረጋገጫ (አድሚኑ አዎ ወይም አይደለም ማድረግ ይችላል)
+    is_paid = models.BooleanField(default=False)
+    
+    # የተስተካከለው የትዕዛዝ ሁኔታ
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
         return f'Order {self.id}'
+
+    # በቡትስትራፕ ለቀለማት ማሳያ እንዲረዳን
+    @property
+    def status_color(self):
+        if self.status == 'Delivered': return 'success'
+        if self.status == 'Shipped': return 'info'
+        if self.status == 'Canceled': return 'danger'
+        return 'warning'
+
+    # የትዕዛዙን አጠቃላይ ዋጋ ለማስላት
+    def get_total_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
@@ -52,12 +71,22 @@ class OrderItem(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def get_cost(self):
+        return self.price * self.quantity
+
 class Review(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
+    comment = models.TextField()
     rating = models.IntegerField(default=5)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Review by {self.user.username} on {self.product.name}'
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    image = models.ImageField(default='profile_pics/default.jpg', upload_to='profile_pics')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'

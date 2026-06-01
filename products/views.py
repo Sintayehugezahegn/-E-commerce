@@ -2,14 +2,20 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .models import Product, Category, Order, OrderItem, Review
+from django.contrib import messages  # ለኤረር መልዕክት ማሳያ
+from .models import Product, Category, Order, OrderItem, Review, Profile
 from .cart import Cart
 
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            # ማረጋገጫ፦ አዲስ የሚመዘገብ ዩዘር በጭራሽ አድሚን ወይም ሻጭ (Staff) እንዳይሆን በግድ False እናደርገዋለን
+            user.is_staff = False
+            user.is_superuser = False
+            user.save()
+            
             login(request, user)
             return redirect('product_list')
     else:
@@ -26,13 +32,37 @@ def product_list(request):
 
 def product_detail(request, id):
     product = get_object_or_404(Product, id=id)
-    return render(request, 'products/product_detail.html', {'product': product})
+    reviews = Review.objects.filter(product=product).order_by('-created_at')
+    return render(request, 'products/product_detail.html', {'product': product, 'reviews': reviews})
+
+@login_required
+def add_review(request, id):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=id)
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+        
+        Review.objects.create(
+            product=product,
+            user=request.user,
+            rating=rating,
+            comment=comment
+        )
+        return redirect('product_detail', id=product.id)
+    return redirect('product_list')
 
 @login_required
 def profile(request):
-    # የዩዘሩን ትዕዛዞች (Orders) እንዲያይ ያደርገዋል
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        if 'image' in request.FILES:
+            profile.image = request.FILES['image']
+            profile.save()
+            return redirect('profile')
+
     orders = Order.objects.filter(user=request.user).order_by('-created')
-    return render(request, 'products/profile.html', {'orders': orders})
+    return render(request, 'products/profile.html', {'orders': orders, 'profile': profile})
 
 def cart_add(request, product_id):
     cart = Cart(request)

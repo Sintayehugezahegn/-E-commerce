@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Welcome Banner -->
-<div class="p-5 mb-4 bg-primary text-white rounded-3 shadow text-center">
+<div class="p-5 mb-4 bg-primary text-white rounded-3 shadow text-center" style="overflow: hidden;">
     <div class="container-fluid py-5">
-        <h1 class="display-3 fw-bold">Welcome to Ethio Shop</h1>
+        <h1 class="display-3 fw-bold moving-text">Welcome to Ethio Shop</h1>
         <p class="fs-4">Your number one marketplace for quality products in Ethiopia.</p>
     </div>
 </div>
 
 <div class="row">
-    <!-- Categories Dropdown for Mobile/General -->
     <div class="col-12 mb-4">
         <form method="GET" class="d-flex">
             <select name="category" class="form-select w-25 me-2" onchange="this.form.submit()">
@@ -22,7 +20,6 @@
         </form>
     </div>
 
-    <!-- Products Grid -->
     {% for product in products %}
     <div class="col-md-4 mb-4">
         <div class="card h-100 shadow-sm border-0">
@@ -45,4 +42,21 @@
     </div>
     {% endfor %}
 </div>
+
+<style>
+    .moving-text {
+        display: inline-block;
+        white-space: nowrap;
+        animation: marquee 12s linear infinite;
+    }
+
+    @keyframes marquee {
+        0% {
+            transform: translateX(100%); /* ከቀኝ ዳርቻ ይጀምራል */
+        }
+        100% {
+            transform: translateX(-100%); /* ወደ ግራ አልፎ ይወጣል */
+        }
+    }
+</style>
 {% endblock %}
