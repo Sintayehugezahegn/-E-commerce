@@ -11,7 +11,7 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            # ማረጋገጫ፦ አዲስ የሚመዘገብ ዩዘር በጭራሽ አድሚን ወይም ሻጭ (Staff) እንዳይሆን በግድ False እናደርገዋለን
+           
             user.is_staff = False
             user.is_superuser = False
             user.save()

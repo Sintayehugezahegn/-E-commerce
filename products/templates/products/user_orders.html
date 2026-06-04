@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">የእኔ ትዕዛዞች</h2>
+    <h2 class="mb-4"> My orders</h2>
     <div class="table-responsive">
         <table class="table table-hover border">
             <thead class="table-light">
                 <tr>
                     <th>Order ID</th>
-                    <th>ቀን</th>
-                    <th>ጠቅላላ ዋጋ</th>
-                    <th>ሁኔታ (Status)</th>
-                    <th>ክፍያ</th>
+                    <th>Date</th>
+                    <th> Total Price</th>
+                    <th>  (Status)</th>
+                    <th> Price</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,7 +42,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="text-center">ምንም ትዕዛዝ የለም።</td>
+                    <td colspan="5" class="text-center"> not have order</td>
                 </tr>
                 {% endfor %}
             </tbody>

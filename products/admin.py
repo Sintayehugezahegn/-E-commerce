@@ -7,11 +7,11 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    # በአድሚን ገጽ ላይ በሰንጠረዥ የሚወጡ ፊልዶች
+    
     list_display = ['id', 'user', 'first_name', 'last_name', 'email', 'city', 'is_paid', 'status', 'created']
-    # በምን ማጣራት (Filter) እንደሚቻል
+    
     list_filter = ['is_paid', 'status', 'created']
-    # አድሚኑ እዚያው ሰንጠረዡ ላይ ሆኖ በቀጥታ እንዲቀይር መፍቀጃ (በጣም ጠቃሚ!)
+     
     list_editable = ['is_paid', 'status']
     inlines = [OrderItemInline]
 

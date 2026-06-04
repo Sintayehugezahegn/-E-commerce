@@ -26,7 +26,7 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
-    # አድሚኑ ሊቀይራቸው የሚችላቸው የትዕዛዝ ደረጃዎች (Status)
+   
     STATUS_CHOICES = (
         ('Pending', 'ትዕዛዝ ላይ ያለ (Pending)'),
         ('Shipped', 'የተላከ (Shipped)'),
@@ -41,16 +41,16 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     
-    # አዲሱ፡ ክፍያ መፈጸሙን ማረጋገጫ (አድሚኑ አዎ ወይም አይደለም ማድረግ ይችላል)
+    
     is_paid = models.BooleanField(default=False)
     
-    # የተስተካከለው የትዕዛዝ ሁኔታ
+    
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
         return f'Order {self.id}'
 
-    # በቡትስትራፕ ለቀለማት ማሳያ እንዲረዳን
+   
     @property
     def status_color(self):
         if self.status == 'Delivered': return 'success'
@@ -58,7 +58,7 @@ class Order(models.Model):
         if self.status == 'Canceled': return 'danger'
         return 'warning'
 
-    # የትዕዛዙን አጠቃላይ ዋጋ ለማስላት
+    
     def get_total_cost(self):
         return sum(item.get_cost() for item in self.items.all())
 

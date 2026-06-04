@@ -5,7 +5,7 @@ urlpatterns = [
     path('', views.product_list, name='product_list'),
     path('product/<int:id>/', views.product_detail, name='product_detail'),
     
-    # አዲሱ መስመር፡ የ add_review ኤረሩን የሚያጠፋው ይህ ነው
+  
     path('product/<int:id>/add_review/', views.add_review, name='add_review'),
     
     path('signup/', views.signup, name='signup'),

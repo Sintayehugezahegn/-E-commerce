@@ -34,7 +34,7 @@
             </div>
         {% empty %}
             <p>No reviews yet.</p>
-        {% endfor %} <!-- እዚህ ጋር ነው ስህተቱ የነበረው: endfor መሆን አለበት -->
+        {% endfor %} 
 
         {% if user.is_authenticated %}
             <form action="{% url 'add_review' product.id %}" method="POST" class="mt-4 p-3 border rounded shadow-sm bg-white">

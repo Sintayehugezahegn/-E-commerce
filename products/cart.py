@@ -5,7 +5,7 @@ from .models import Product
 class Cart:
     def __init__(self, request):
         self.session = request.session
-        # እዚህ ጋር ነው settings.CART_SESSION_ID የሚለውን የሚፈልገው
+       
         cart = self.session.get(settings.CART_SESSION_ID)
         if not cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
